@@ -20,14 +20,14 @@ public class SpawnManager : MonoSingletone<SpawnManager>
     void Start()
     {
         GenerateObstacles(5, 0);
-        // InvokeRepeating("SpawnObstacle", 1.0f, 1.0f);
+        InvokeRepeating("SpawnObstacle", 1.0f, 2.0f);
     }
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            SpawnObstacle();
-        }
+        // if(Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     SpawnObstacle();
+        // }
     }
 
     // Pool で管理する, 各obstaclePrefab(type) を 生成するメソッド
@@ -62,9 +62,12 @@ public class SpawnManager : MonoSingletone<SpawnManager>
 
     public void SpawnObstacle()
     {
-        // Instantiate(RequestObstacle, _spawnPos, Quaternion.identity);
-        GameObject obstacle = RequestObstacle();
-        obstacle.transform.position = _spawnPos;
+        if(!PlayerController.gameOver)
+        {
+            // Instantiate(RequestObstacle, _spawnPos, Quaternion.identity);
+            GameObject obstacle = RequestObstacle();
+            obstacle.transform.position = _spawnPos;
+        }
     }
 
 

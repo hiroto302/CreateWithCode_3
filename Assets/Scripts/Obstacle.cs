@@ -7,9 +7,13 @@ public class Obstacle : MonoBehaviour
     public float speed = 10.0f;
     public float hidePosX = -5f;
 
+
     void Update()
     {
-        MoveLeft();
+        if(!PlayerController.gameOver)
+        {
+            MoveLeft();
+        }
         Hide();
     }
 

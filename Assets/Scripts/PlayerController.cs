@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     public float gravityModifilter = 2.5f;
     public bool isOnGround = true;
 
+    public static bool gameOver;
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +33,15 @@ public class PlayerController : MonoBehaviour
     // In contrast to OnTriggerEnter, OnCollisionEnter is passed the Collision class and not a Collider.
     void OnCollisionEnter(Collision collision)
     {
-        IsOnGround(true);
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            IsOnGround(true);
+        }
+        else if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            gameOver = true;
+            Debug.Log("GameOver");
+        }
     }
 
     void Jump()

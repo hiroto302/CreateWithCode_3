@@ -6,7 +6,8 @@ public class PlayerControllerX : MonoBehaviour
 {
     public static bool gameOver;
 
-    public float floatForce = 1.0f;
+    public float floatForce = 50.0f;
+    public float reboundForce = 30.0f;
     private float gravityModifier = 1.5f;
     private Rigidbody playerRb;
 
@@ -19,7 +20,9 @@ public class PlayerControllerX : MonoBehaviour
 
     // 上の移動位置制限
     private float _heightLimit = 15.0f;
-
+    // 地面に接地したか
+    private bool _onGround;
+    private const string _groundTag = "Ground";
 
 
     // Start is called before the first frame update
@@ -66,9 +69,12 @@ public class PlayerControllerX : MonoBehaviour
             fireworksParticle.Play();
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
-
         }
 
+        if(other.gameObject.CompareTag(_groundTag))
+        {
+            playerRb.AddForce(Vector3.up * reboundForce, ForceMode.Impulse);
+        }
     }
 
 }

@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
     public AudioClip crashSound;
     private AudioSource playerAudio;
 
+    // ダブルジャンプの最中であるかないか
+    bool hasDoubleJumped = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +36,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DoubleJump();
         Jump();
     }
 
@@ -44,10 +48,12 @@ public class PlayerController : MonoBehaviour
     // In contrast to OnTriggerEnter, OnCollisionEnter is passed the Collision class and not a Collider.
     void OnCollisionEnter(Collision collision)
     {
+        // 地面に接地した時の処理
         if(collision.gameObject.CompareTag("Ground"))
         {
             IsOnGround(true);
             dirtParticle.Play();
+            hasDoubleJumped = false;
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
@@ -70,6 +76,18 @@ public class PlayerController : MonoBehaviour
             _rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
             IsOnGround(false);
             dirtParticle.Stop();
+        }
+    }
+
+    // 空中でもう一度ジャンプする機能
+    void DoubleJump()
+    {
+        if(Input.GetKeyDown(KeyCode.Space) && !isOnGround && !hasDoubleJumped && !gameOver)
+        {
+            hasDoubleJumped = true;
+            playerAudio.PlayOneShot(jumpSound, 1.0f);
+            animator.SetTrigger("Jump_trig");
+            _rb.AddForce(Vector3.up * JumpForce / 1.3f, ForceMode.Impulse);
         }
     }
 

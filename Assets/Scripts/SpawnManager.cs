@@ -41,8 +41,17 @@ public class SpawnManager : MonoSingletone<SpawnManager>
         GenerateObstacles(3, 0);
         GenerateObstacles(3, 1);
 
-        // 格納したobstacle をランダムに生成(種類に応じて)
-        InvokeRepeating("SpawnRandomlyObstacle", 1.0f, 2.0f);
+        // GameManager の状態が変わった時に実行するメソッド
+        GameManager.Instance.OnGameStateChange += HandleGameStateChange;
+    }
+
+    void HandleGameStateChange(GameManager.GameState currentState, GameManager.GameState previousState)
+    {
+        if(currentState == GameManager.GameState.RUNNING && previousState == GameManager.GameState.PREGAME)
+        {
+            // 格納したobstacle をランダムに生成(種類に応じて)
+            InvokeRepeating("SpawnRandomlyObstacle", 1.0f, 2.0f);
+        }
     }
 
     // 格納されてるObstacle の種類の数だけ Containe を生成する

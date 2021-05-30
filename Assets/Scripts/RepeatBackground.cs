@@ -16,13 +16,16 @@ public class RepeatBackground : MonoBehaviour
 
     void Update()
     {
-        if(transform.position.x < _startPos.x - _repeatWidth)
+        if(GameManager.Instance.CurrentState == GameManager.GameState.RUNNING)
         {
-            ResetPostion();
-        }
-        if(!PlayerController.gameOver)
-        {
-            MoveLeft();
+            if(transform.position.x < _startPos.x - _repeatWidth)
+            {
+                ResetPostion();
+            }
+            if(!PlayerController.gameOver)
+            {
+                MoveLeft();
+            }
         }
     }
 

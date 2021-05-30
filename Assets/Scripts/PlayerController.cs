@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     {
         DoubleJump();
         Jump();
+        Dash();
     }
 
     /*
@@ -94,5 +95,18 @@ public class PlayerController : MonoBehaviour
     void IsOnGround(bool isOnGround)
     {
         this.isOnGround = isOnGround;
+    }
+
+    // 走る機能をシミュレーションする
+    void Dash()
+    {
+        if(Input.GetKeyDown(KeyCode.D))
+        {
+            Time.timeScale = 1.5f;
+        }
+        if(Input.GetKeyUp(KeyCode.D))
+        {
+            Time.timeScale = 1.0f;
+        }
     }
 }

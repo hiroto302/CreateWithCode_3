@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -14,7 +15,7 @@ public class GameManager : MonoSingleton<GameManager>
     // 第一引数 現在の状態, 第二引数 以前の状態
     public event Action<GameState, GameState> OnGameStateChange;
 
-    private GameState _currentState;   // 現在の状態
+    [SerializeField] private GameState _currentState;   // 現在の状態
 
     public GameState CurrentState
     {
@@ -22,6 +23,16 @@ public class GameManager : MonoSingleton<GameManager>
         private set { _currentState = value; }
     }
 
+    void Start()
+    {
+        DontDestroyOnLoad(this);
+        PlayerController.OnPlayerDead += HandlePlayerDead;
+    }
+
+    void HandlePlayerDead()
+    {
+        RestartGame();
+    }
 
     public void UpdateState(GameState state)
     {
@@ -31,8 +42,23 @@ public class GameManager : MonoSingleton<GameManager>
         OnGameStateChange(_currentState, previousGameState);
     }
 
-    public void GameStart()
+    public void StartGame()
     {
         UpdateState(GameState.RUNNING);
+    }
+
+    void RestartGame()
+    {
+        // 3秒後にリスタート
+        UpdateState(GameState.PREGAME);
+        StartCoroutine(RestartGameRoutine());
+    }
+
+    IEnumerator RestartGameRoutine()
+    {
+        yield return new WaitForSeconds(3.0f);
+        PlayerController.gameOver = false;
+        SpawnManager.Instance.Initialize();
+        SceneManager.LoadScene(0);
     }
 }

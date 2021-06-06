@@ -35,6 +35,7 @@ public class SpawnManager : MonoSingletone<SpawnManager>
 
     void Start()
     {
+        DontDestroyOnLoad(this);
         // コンテイナーを作成
         GenerateObstacleContainers();
         // 各コンテナにObstacleObjectを格納
@@ -51,6 +52,15 @@ public class SpawnManager : MonoSingletone<SpawnManager>
         {
             // 格納したobstacle をランダムに生成(種類に応じて)
             InvokeRepeating("SpawnRandomlyObstacle", 1.0f, 2.0f);
+        }
+
+        // ゲームが再スタートされる時
+        if(currentState == GameManager.GameState.PREGAME && previousState == GameManager.GameState.RUNNING)
+        {
+            // Invoke の 呼び出しを停止
+            CancelInvoke();
+            // 初期化処理
+            // Initialize();
         }
     }
 
@@ -147,6 +157,25 @@ public class SpawnManager : MonoSingletone<SpawnManager>
             {
                 GameObject obstacle = RequestSecondObstacle();
                 obstacle.transform.position = _spawnPos;
+            }
+        }
+    }
+
+    // 初期化処理
+    public void Initialize()
+    {
+        foreach(var obstacle in _obstaclePool)
+        {
+            if(obstacle.activeInHierarchy == true)
+            {
+                obstacle.SetActive(false);
+            }
+        }
+        foreach(var obstacle in _secondObstaclePool)
+        {
+            if(obstacle.activeInHierarchy == true)
+            {
+                obstacle.SetActive(false);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour
     // ダブルジャンプの最中であるかないか
     bool hasDoubleJumped = false;
 
+    public static event Action OnPlayerDead;
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,8 @@ public class PlayerController : MonoBehaviour
         Physics.gravity *= gravityModifilter;
         animator = GetComponent<Animator>();
         playerAudio = GetComponent<AudioSource>();
+
+        JumpForce = 15.0f;
     }
 
     // Update is called once per frame
@@ -56,6 +61,7 @@ public class PlayerController : MonoBehaviour
             dirtParticle.Play();
             hasDoubleJumped = false;
         }
+        // 障害物に衝突した時の処理
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
             playerAudio.PlayOneShot(crashSound, 1.0f);
@@ -64,7 +70,8 @@ public class PlayerController : MonoBehaviour
             gameOver = true;
             animator.SetBool("Death_b", true);
             animator.SetInteger("DeathType_int", 1);
-            Debug.Log("GameOver");
+            // player が死んだ時の処理
+            OnPlayerDead();
         }
     }
 
@@ -72,6 +79,7 @@ public class PlayerController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space) && isOnGround && !gameOver)
         {
+            Debug.Log("firstJump");
             playerAudio.PlayOneShot(jumpSound, 1.0f);
             animator.SetTrigger("Jump_trig");
             _rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
@@ -85,6 +93,7 @@ public class PlayerController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space) && !isOnGround && !hasDoubleJumped && !gameOver)
         {
+            Debug.Log("SeceondJuamp");
             hasDoubleJumped = true;
             playerAudio.PlayOneShot(jumpSound, 1.0f);
             animator.SetTrigger("Jump_trig");

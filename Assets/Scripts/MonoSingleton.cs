@@ -17,14 +17,15 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 
     protected virtual void Awake()
     {
-        if (instance != null)
-        {
-            Debug.LogError("[Singleton] Trying to instantiate a second instance of a singleton class");
-        }
-        else
-        {
-            instance = (T) this;
-        }
+        CheckInstance();
+        // if (instance != null)
+        // {
+        //     Debug.LogError("[Singleton] Trying to instantiate a second instance of a singleton class");
+        // }
+        // else
+        // {
+        //     instance = (T) this;
+        // }
     }
 
     protected virtual void OnDestroy()
@@ -32,6 +33,24 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
         if ( instance == this)
         {
             instance = null;
+        }
+    }
+
+    bool CheckInstance()
+    {
+        if (instance == null)
+        {
+            instance = (T)this;
+            return true;
+        }
+        else if (Instance == this)
+        {
+            return true;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            return false;
         }
     }
 }

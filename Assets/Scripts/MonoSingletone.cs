@@ -51,10 +51,31 @@ public abstract class MonoSingletone<T> : MonoBehaviour where T : MonoSingletone
 
     void Awake()
     {
-        _instance = this as T;
+        CheckInstance();
+        // _instance = this as T;
     }
     public virtual void Init()
     {
         // optional to override
     }
+
+    // シングルトンクラスが重複しないかチェック
+    bool CheckInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = (T)this;
+            return true;
+        }
+        else if (Instance == this)
+        {
+            return true;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+            return false;
+        }
+    }
+
 }

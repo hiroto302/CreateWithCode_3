@@ -36,6 +36,6 @@ public class IntroCntroller : MonoBehaviour
         _player.transform.position = gameStartPosition;
         _player.gameObject.GetComponent<Animator>().speed = 1.0f;
         // ゲーム開始
-        GameManager.Instance.GameStart();
+        GameManager.Instance.StartGame();
     }
 }
